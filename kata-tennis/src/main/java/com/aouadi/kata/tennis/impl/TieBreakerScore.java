@@ -41,11 +41,12 @@ public class TieBreakerScore implements Score.Game {
     }
 
     @Override
-    public String toString() {
-        return new StringBuilder().append(pointsWon[0]).append('-').append(pointsWon[1]).toString();
+    public CharSequence toCharSequence() {
+        return new StringBuilder().append(pointsWon[0]).append('-').append(pointsWon[1]);
     }
 
-    public int[] getPointsWon() {
-        return pointsWon;
+    @Override
+    public String toString() {
+        return toCharSequence().toString();
     }
 }

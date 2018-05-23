@@ -1,7 +1,5 @@
 package com.aouadi.kata.tennis;
 
-import java.util.stream.Stream;
-
 /**
  * @author Wael.Aouadi
  * Mediator design pattern
@@ -20,27 +18,20 @@ public interface MatchMediator {
     Status getStatus();
 
     /**
-     * @return the ongoing set score if the match is in progress, otherwise {@code null}
+     * @param n the set number, it starts with {@code 1};
+     * @return the set score at the given number
      */
-    Score.Set getCurrentSet();
+    Score.Set scoreSetAt(int n);
 
     /**
-     * @return the number of sets over and also the ongoing one if exists
+     * @return the sets score size
      */
-    int getSetCount();
+    int scoreSetCount();
 
     /**
-     * Finds the set matches the given index
-     * @param i the set index starts with 1
-     * @return the matched set
-     * @throws IndexOutOfBoundsException if the given index is invalid
+     * Prints the match details to the the given {@link Match.Printer}
      */
-    Score.Set getSet(int i);
-
-    /**
-     * Stream the sets score
-     */
-    Stream<Score.Set> streamSet();
+    void printTo(Match.Printer printer);
 
     /**
      * Do the work of the given player wins a point

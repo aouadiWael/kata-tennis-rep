@@ -2,7 +2,7 @@ package com.aouadi.kata.tennis.impl;
 
 import com.aouadi.kata.tennis.Player;
 import com.aouadi.kata.tennis.Score;
-import com.aouadi.kata.tennis.TennisException;
+import com.aouadi.kata.tennis.TennisRuntimeException;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class SetScore implements Score.Set {
 
     public boolean winPoint(Player.Id pid) {
         if (currentGame == null) {
-            throw new TennisException("The set is over.");
+            throw new TennisRuntimeException("The set is over.");
         }
         if (currentGame.winPoint(pid)) {
             // Current game is over
@@ -55,8 +55,13 @@ public class SetScore implements Score.Set {
     }
 
     @Override
+    public CharSequence toCharSequence() {
+        return new StringBuilder().append('(').append(gamesWon[0]).append('-').append(gamesWon[1]).append(')');
+    }
+
+    @Override
     public String toString() {
-        return new StringBuilder().append('(').append(gamesWon[0]).append('-').append(gamesWon[1]).append(')').toString();
+        return toCharSequence().toString();
     }
 
     private void startGame() {
@@ -71,18 +76,20 @@ public class SetScore implements Score.Set {
                 currentGame = new GameScore();
             }
         } else {
-            // Set over
+            // Set is over
             currentGame = null;
         }
     }
 
     private boolean isSetOver() {
-        if(isCombination(6, 7)){
-            if(currentGame instanceof TieBreakerScore){
+        if (isCombination(6, 7)) {
+            // Case Tie-Break
+            if (currentGame instanceof TieBreakerScore) {
                 return currentGame.isOver();
             }
-            return true; // ie currentGame == null
-        }else{
+            // Case (currentGame == null)
+            return true;
+        } else {
             final int max = Math.max(gamesWon[0], gamesWon[1]);
             if (max < 6) {
                 return false;
@@ -92,7 +99,7 @@ public class SetScore implements Score.Set {
         }
     }
 
-    private boolean isCombination(int i, int j){
+    private boolean isCombination(int i, int j) {
         return gamesWon[0] == i && gamesWon[1] == j || gamesWon[0] == j && gamesWon[1] == i;
     }
 

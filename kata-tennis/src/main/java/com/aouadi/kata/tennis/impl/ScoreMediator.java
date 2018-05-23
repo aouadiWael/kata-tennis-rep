@@ -4,7 +4,7 @@ import com.aouadi.kata.tennis.*;
 
 
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -16,18 +16,17 @@ public class ScoreMediator implements MatchMediator {
     private final Player player1;
     private final Player player2;
     private final int[] setsWon = {0, 0};
+    private final List<Score.Set> sets;
 
-    private List<Score.Set> sets;
     private Status status;
     private SetScore currentSet;
 
-
     public ScoreMediator(Player player1, Player player2) {
+        Objects.requireNonNull(player1);
+        Objects.requireNonNull(player2);
         sets = new ArrayList<>(5);
         this.player1 = player1;
         this.player2 = player2;
-        Objects.requireNonNull(player1);
-        Objects.requireNonNull(player2);
         status = Status.IN_PROGRESS;
         startSet();
     }
@@ -44,29 +43,42 @@ public class ScoreMediator implements MatchMediator {
     }
 
     @Override
-    public Score.Set getCurrentSet() {
-        return currentSet;
+    public Score.Set scoreSetAt(int n) {
+        try {
+            return sets.get(n - 1);
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IllegalArgumentException("Invalid set number, must be between [1 - Match.scoreSetCount()]: " + n);
+        }
     }
 
     @Override
-    public int getSetCount() {
+    public int scoreSetCount(){
         return sets.size();
     }
 
     @Override
-    public Score.Set getSet(int i) {
-        return sets.get(i -1);
-    }
+    public void printTo(Match.Printer printer) {
+        Objects.requireNonNull(printer);
+        final StringBuilder builder = new StringBuilder();
+        builder.append("Player 1 : ").append(player1.getName()).append('\n')
+                .append("Player 2 : ").append(player2.getName()).append('\n');
 
-    @Override
-    public Stream<Score.Set> streamSet() {
-        return sets.stream();
+        builder.append("Score : ")
+                .append(sets.stream().map(Score.Set::toCharSequence).collect(Collectors.joining(" ")));
+        // Match is over
+        Optional.ofNullable(this.getCurrentGame()).ifPresent(
+                g -> builder.append('\n').append("Current game status : ").append(g.toCharSequence())
+        );
+
+        builder.append('\n').append("Match Status : ").append(getStatus().getLabel());
+
+        printer.print(builder.toString());
     }
 
     @Override
     public void winPoint(Player player) {
         if(!Status.IN_PROGRESS.equals(status)){
-            throw new TennisException("The match is over.");
+            throw new TennisRuntimeException("The match is over.");
         }
         boolean setOver;
         if (player == player1) {
@@ -99,7 +111,6 @@ public class ScoreMediator implements MatchMediator {
             } else {
                 status = Status.PLAYER2_WINS;
             }
-            sets = Collections.unmodifiableList(sets);
             currentSet = null;
         }
     }

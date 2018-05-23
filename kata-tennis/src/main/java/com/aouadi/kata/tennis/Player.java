@@ -2,7 +2,6 @@ package com.aouadi.kata.tennis;
 
 /**
  * @author Wael.Aouadi
- * 
  * Tennis Player Contract
  */
 public interface Player {

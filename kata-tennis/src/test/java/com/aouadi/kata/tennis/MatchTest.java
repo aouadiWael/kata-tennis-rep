@@ -6,8 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
+import java.io.StringWriter;
 
 /**
  * 
@@ -22,7 +21,7 @@ public class MatchTest {
 
     @Before
     public void initMatch() {
-        match = MatchFactory.createMatch("WAO", "AAB");
+        match = MatchFactory.createMatch("Name 1", "Name 2");
         player1 = match.getFirstPlayer();
         player2 = match.getSecondPlayer();
     }
@@ -39,7 +38,7 @@ public class MatchTest {
         assertEquals(Status.PLAYER1_WINS, match.getStatus());
     }
 
-    @Test(expected = TennisException.class)
+    @Test(expected = TennisRuntimeException.class)
     public void matchOverException() {
         //GIVEN :: Match Over
         TennisTestUtil.winGame(player1, 6);
@@ -50,7 +49,7 @@ public class MatchTest {
         player2.winPoint();
 
         //THEN
-        //TennisException
+        //TennisRuntimeException
     }
 
     @Test
@@ -66,15 +65,15 @@ public class MatchTest {
         player2.winPoint();
         //THEN
         assertEquals(Status.IN_PROGRESS, match.getStatus());
-        assertEquals(3, match.getSetCount());
+        assertEquals(3, match.scoreSetCount());
 
-        Assert.assertEquals(Player.Id.FIRST, match.getSet(1).getWinner());
-        Assert.assertEquals(Player.Id.SECOND, match.getSet(2).getWinner());
-        Assert.assertEquals(Player.Id.NONE, match.getSet(3).getWinner());
+        Assert.assertEquals(Player.Id.FIRST, match.scoreSetAt(1).getWinner());
+        Assert.assertEquals(Player.Id.SECOND, match.scoreSetAt(2).getWinner());
+        Assert.assertEquals(Player.Id.NONE, match.scoreSetAt(3).getWinner());
 
-        assertEquals("(6-1)", match.getSet(1).toString());
-        assertEquals("(5-7)", match.getSet(2).toString());
-        assertEquals("(1-0)", match.getSet(3).toString());
+        assertEquals("(6-1)", match.scoreSetAt(1).toString());
+        assertEquals("(5-7)", match.scoreSetAt(2).toString());
+        assertEquals("(1-0)", match.scoreSetAt(3).toString());
 
         assertNotNull(match.getCurrentGame());
         assertEquals("15-30", match.getCurrentGame().toString());
@@ -94,8 +93,8 @@ public class MatchTest {
         //THEN
         assertEquals(Status.IN_PROGRESS, match.getStatus());
 
-        assertEquals(1, match.getSetCount());
-        assertEquals("(0-0)", match.getSet(1).toString());
+        assertEquals(1, match.scoreSetCount());
+        assertEquals("(0-0)", match.scoreSetAt(1).toString());
 
         assertNotNull(match.getCurrentGame());
         assertEquals("deuce", match.getCurrentGame().toString());
@@ -114,8 +113,8 @@ public class MatchTest {
         //THEN
         assertEquals(Status.IN_PROGRESS, match.getStatus());
 
-        assertEquals(1, match.getSetCount());
-        assertEquals("(0-0)", match.getSet(1).toString());
+        assertEquals(1, match.scoreSetCount());
+        assertEquals("(0-0)", match.scoreSetAt(1).toString());
 
         assertNotNull(match.getCurrentGame());
         assertEquals("Player 1 has advantage", match.getCurrentGame().toString());
@@ -134,8 +133,8 @@ public class MatchTest {
         //THEN
         assertEquals(Status.IN_PROGRESS, match.getStatus());
 
-        assertEquals(2, match.getSetCount());
-        assertEquals("(6-4)", match.getSet(1).toString());
+        assertEquals(2, match.scoreSetCount());
+        assertEquals("(6-4)", match.scoreSetAt(1).toString());
 
         assertNotNull(match.getCurrentGame());
         assertEquals("0-0", match.getCurrentGame().toString());
@@ -160,23 +159,18 @@ public class MatchTest {
         TennisTestUtil.winGame(player1, 3, player2, 6);
         TennisTestUtil.winGame(player1, 3, player2, 5);
         TennisTestUtil.winBall(player1, 3, player2, 1);
-        final String expected = "Player 1 : WAO\n" +
-                "Player 2 : AAB\n" +
-                "Score : (4-6)(3-6)(3-5)\n" +
+        final String expected = "Player 1 : Name 1\n" +
+                "Player 2 : Name 2\n" +
+                "Score : (4-6) (3-6) (3-5)\n" +
                 "Current game status : 40-15\n" +
                 "Match Status : In progress";
         //THEN
-        //Start capturing
-        final PrintStream standard = System.out;
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buffer));
-        match.printDetails();
-        // Stop capturing
-        System.setOut(standard);
+        final StringWriter printer = new StringWriter();
+        match.printTo(printer::append);
 
         //THEN
         assertTrue(match.getStatus().equals(Status.IN_PROGRESS));
-        assertEquals(expected, buffer.toString());
+        assertEquals(expected, printer.toString());
     }
 
     @Test
@@ -185,21 +179,16 @@ public class MatchTest {
         TennisTestUtil.winGame(player1, 4, player2, 6);
         TennisTestUtil.winGame(player1, 3, player2, 6);
         TennisTestUtil.winGame(player1, 1, player2, 6);
-        final String expected = "Player 1 : WAO\n" +
-                "Player 2 : AAB\n" +
-                "Score : (4-6)(3-6)(1-6)\n" +
+        final String expected = "Player 1 : Name 1\n" +
+                "Player 2 : Name 2\n" +
+                "Score : (4-6) (3-6) (1-6)\n" +
                 "Match Status : Player 2 wins";
         //THEN
-        //Start capturing
-        final PrintStream standard = System.out;
-        final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(buffer));
-        match.printDetails();
-        // Stop capturing
-        System.setOut(standard);
+        final StringWriter printer = new StringWriter();
+        match.printTo(printer::append);
 
         //THEN
         assertTrue(match.getStatus().equals(Status.PLAYER2_WINS));
-        assertEquals(expected, buffer.toString());
+        assertEquals(expected, printer.toString());
     }
 }

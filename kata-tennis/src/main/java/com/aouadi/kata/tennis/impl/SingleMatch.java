@@ -2,13 +2,9 @@ package com.aouadi.kata.tennis.impl;
 
 import com.aouadi.kata.tennis.*;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 /**
  * @author Wael.Aouadi
- * 
- * Represents a tennis match of two single players
+ * Represents a a tennis match of two single players
  */
 public class SingleMatch implements Match {
 
@@ -22,53 +18,39 @@ public class SingleMatch implements Match {
         this.player2 = player2;
     }
 
+    @Override
     public Player getFirstPlayer() {
         return player1;
     }
 
+    @Override
     public Player getSecondPlayer() {
         return player2;
     }
 
+    @Override
     public Status getStatus() {
         return mediator.getStatus();
     }
 
+    @Override
     public Score.Game getCurrentGame() {
         return mediator.getCurrentGame();
     }
 
-    public Score.Set getCurrentSet() {
-        return mediator.getCurrentSet();
+    @Override
+    public Score.Set scoreSetAt(int n) {
+        return mediator.scoreSetAt(n);
     }
 
-    public Score.Set getSet(int n) {
-        try {
-            return mediator.getSet(n);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new IllegalArgumentException("Invalid set number [1 - Match.getSetCount()]: " + n);
-        }
+    @Override
+    public int scoreSetCount() {
+        return mediator.scoreSetCount();
     }
 
-    public int getSetCount() {
-        return mediator.getSetCount();
-    }
-
-    public void printDetails() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("Player 1 : ").append(player1.getName()).append('\n')
-                .append("Player 2 : ").append(player2.getName()).append('\n');
-
-        builder.append("Score : ")
-                .append(mediator.streamSet().map(Score.Set::toString).collect(Collectors.joining("")));
-        // Match is over
-        Optional.ofNullable(mediator.getCurrentGame()).ifPresent(
-                g -> builder.append('\n').append("Current game status : ").append(g.toString())
-        );
-
-        builder.append('\n').append("Match Status : ").append(getStatus().getLabel());
-
-        System.out.print(builder.toString());
+    @Override
+    public void printTo(Printer printer) {
+        mediator.printTo(printer);
     }
 
 }

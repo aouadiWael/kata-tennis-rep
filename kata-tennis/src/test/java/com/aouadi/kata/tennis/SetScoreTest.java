@@ -15,9 +15,9 @@ import static org.junit.Assert.*;
 public class SetScoreTest {
 
     @Test
-    public void initialStateSetScore(){
+    public void initialStateSetScore() {
         //GIVEN
-        final SetScore setScore ;
+        final SetScore setScore;
         //WHEN
         setScore = new SetScore();
         //THEN
@@ -28,7 +28,7 @@ public class SetScoreTest {
     }
 
     @Test
-    public void hasAdvantage(){
+    public void hasAdvantage() {
         //GIVEN deuce
         final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 3, Player.Id.SECOND, 3);
         //WHEN
@@ -40,7 +40,7 @@ public class SetScoreTest {
     }
 
     @Test
-    public void winAdvantage(){
+    public void winAdvantage() {
         //GIVEN
         final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 3, Player.Id.SECOND, 4);
         //WHEN
@@ -51,7 +51,7 @@ public class SetScoreTest {
     }
 
     @Test
-    public void loseAdvantage(){
+    public void loseAdvantage() {
         //GIVEN
         final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 3, Player.Id.SECOND, 4);
         //WHEN
@@ -63,7 +63,7 @@ public class SetScoreTest {
     }
 
     @Test
-    public void deuce(){
+    public void deuce() {
         //GIVEN
         final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 2, Player.Id.SECOND, 3);
         //WHEN
@@ -75,7 +75,7 @@ public class SetScoreTest {
     }
 
     @Test
-    public void winFirstGameAndStartNewGame(){
+    public void winFirstGameAndStartNewGame() {
         //GIVEN 40-30
         final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 3, Player.Id.SECOND, 2);
         //WHEN
@@ -87,10 +87,10 @@ public class SetScoreTest {
         assertEquals("0-0", setScore.getCurrentGame().toString());
     }
 
-    @Test(expected = TennisException.class)
-    public void playingAndSetOver(){
+    @Test(expected = TennisRuntimeException.class)
+    public void playingAndSetOver() {
         //GIVEN (6-0)
-        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4*6);
+        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4 * 6);
         //WHEN
         setScore.winPoint(Player.Id.FIRST);
         //THEN
@@ -98,9 +98,9 @@ public class SetScoreTest {
     }
 
     @Test
-    public void winLastGameSetAndGameOver(){
+    public void winLastGameSetAndGameOver() {
         //GIVEN (5-1) 40-0
-        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4*5, Player.Id.SECOND, 4);
+        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4 * 5, Player.Id.SECOND, 4);
         TennisTestUtil.initSet(setScore, Player.Id.FIRST, 3);
         //WHEN
         setScore.winPoint(Player.Id.FIRST);
@@ -112,9 +112,9 @@ public class SetScoreTest {
     }
 
     @Test
-    public void startTieBreakGame(){
+    public void startTieBreakGame() {
         //GIVEN (5-6)
-        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4*5, Player.Id.SECOND, 4*6);
+        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4 * 5, Player.Id.SECOND, 4 * 6);
         //WHEN (6-6)
         TennisTestUtil.initSet(setScore, Player.Id.FIRST, 4);
         //THEN (6-6)
@@ -126,9 +126,9 @@ public class SetScoreTest {
     }
 
     @Test
-    public void tieBreakGame(){
+    public void tieBreakGame() {
         //GIVEN (6-6)
-        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4*5, Player.Id.SECOND, 4*6);
+        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4 * 5, Player.Id.SECOND, 4 * 6);
         TennisTestUtil.initSet(setScore, Player.Id.FIRST, 4);
         //WHEN 3-6
         TennisTestUtil.initSet(setScore, Player.Id.SECOND, 6);
@@ -142,9 +142,9 @@ public class SetScoreTest {
     }
 
     @Test
-    public void winTieBreakGameHardly(){
+    public void winTieBreakGameHardly() {
         //GIVEN (6-6)
-        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4*5, Player.Id.SECOND, 4*6);
+        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4 * 5, Player.Id.SECOND, 4 * 6);
         TennisTestUtil.initSet(setScore, Player.Id.FIRST, 4);
         //WHEN 8-6
         TennisTestUtil.initSet(setScore, Player.Id.SECOND, 6);
@@ -157,9 +157,9 @@ public class SetScoreTest {
     }
 
     @Test
-    public void winTieBreakGameEasily(){
+    public void winTieBreakGameEasily() {
         //GIVEN (6-6)
-        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4*5, Player.Id.SECOND, 4*6);
+        final SetScore setScore = TennisTestUtil.createSet(Player.Id.FIRST, 4 * 5, Player.Id.SECOND, 4 * 6);
         TennisTestUtil.initSet(setScore, Player.Id.FIRST, 4);
         //WHEN 7-0
         TennisTestUtil.initSet(setScore, Player.Id.FIRST, 7);

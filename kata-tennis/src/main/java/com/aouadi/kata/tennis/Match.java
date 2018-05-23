@@ -30,26 +30,23 @@ public interface Match {
     Score.Game getCurrentGame();
 
     /**
-     * Gets the ongoing set
-     *
-     * @return the ongoing set if the game status is {@code Status.IN_PROGRESS}, otherwise returns {@code null}
+     * @param n the set number, it starts with {@code 1};
+     * @return the set score at the given number
      */
-    Score.Set getCurrentSet();
+    Score.Set scoreSetAt(int n);
 
     /**
-     * @param i the set number, i starts with 1;
-     * @return the set score having the given number
+     * @return the sets score size
      */
-    Score.Set getSet(int i);
+    int scoreSetCount();
 
     /**
-     * @return the sets size
+     * Prints the match details to the the given {@link Printer}
      */
-    int getSetCount();
+    void printTo(Printer printer);
 
-    /**
-     * Prints the match details to the standard output screen
-     */
-    void printDetails();
-
+    @FunctionalInterface
+    interface Printer {
+        void print(String details);
+    }
 }

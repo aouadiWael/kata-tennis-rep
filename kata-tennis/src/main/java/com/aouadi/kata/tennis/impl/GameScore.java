@@ -12,7 +12,7 @@ public class GameScore implements Score.Game {
 
     private StateComposite state;
 
-    public GameScore() {
+    GameScore() {
         this.state = StateComposite.ZERO_ALL;
     }
 
@@ -46,8 +46,13 @@ public class GameScore implements Score.Game {
     }
 
     @Override
-    public String toString() {
+    public  CharSequence toCharSequence() {
         return state.toString();
+    }
+
+    @Override
+    public  String toString(){
+        return toCharSequence().toString();
     }
 
     /**
@@ -116,6 +121,7 @@ public class GameScore implements Score.Game {
 
     /**
      * Represents the internal states of a tennis game score.
+     * It is a workaround of Java illegal sel reference for {@code {@link StateComposite }}
      */
     enum State {
 

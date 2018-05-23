@@ -2,7 +2,6 @@ package com.aouadi.kata.tennis;
 
 /**
  * @author Wael.Aouadi
- * 
  * Score Interface represents the Basic Contract of any Score
  */
 public interface Score {
@@ -15,9 +14,9 @@ public interface Score {
     boolean winPoint(Player.Id pid);
 
     /**
-     * @return The formatted score, used basically in print score
+     * @return The formatted score, basically used in print score details
      */
-    String toString();
+    CharSequence toCharSequence();
 
     /**
      * @return The Winner Id if the Score is ongoing, otherwise {@code Player.Id.NONE}
